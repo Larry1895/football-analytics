@@ -2,11 +2,12 @@ import datetime
 
 import requests
 from bs4 import BeautifulSoup as bs
+
 from src.scrapper.models.fifa_scrapper_execution import FifaScrapperExecution
 from src.scrapper.repositories.fifa_scrapper_execution_repository import save_new_fifa_scrapper_execution
 from src.scrapper.services.sofifa_persistence_service import save_data
 from src.scrapper.services.sofifa_player_scrapper_service import find_player_info, find_player_stats, find_fifa_info, \
-    find_player_club_transfers
+    find_player_club_transfers, find_player_appearances
 
 
 def soup_maker(url):
@@ -41,8 +42,8 @@ def start_execution():
 def find_first_player_shortname(soup):
     table = soup.find('table', {'class': 'table table-hover persist-area'})
     tbody = table.find('tbody')
-    all_a_names = tbody.find_all('a', {'class': 'tooltip'})
-    return all_a_names[0].text
+    all_a_names = tbody.find_all('a', {'role': 'tooltip'})
+    return all_a_names[0].find('div').text
 
 
 def scrap_data_from_all_player():
@@ -70,11 +71,11 @@ def scrap_data_from_all_player():
 def scrap_data_from_all_player_of_one_page(soup):
     table = soup.find('table', {'class': 'table table-hover persist-area'})
     tbody = table.find('tbody')
-    all_a_names = tbody.find_all('a', {'class': 'tooltip'})
+    all_a_names = tbody.find_all('a', {'role': 'tooltip'})
 
     # Iterate over all player
     for player in all_a_names:
-        final_details = {'short_name': player.text}
+        final_details = {'short_name': player.find('div').text}
 
         sofifa_id = player['href'].split('/')[2]
 
@@ -104,6 +105,7 @@ def get_player_details(soup):
 def get_player_transfer_data(soup):
     all_details = {}
     all_details.update(find_player_club_transfers(soup))
+    all_details.update(find_player_appearances(soup))
     return all_details
 
 

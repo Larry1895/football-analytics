@@ -1,6 +1,5 @@
 # coding=utf-8
 from src.scrapper.base import Session
-from src.scrapper.models.fifa_scrapper_execution import FifaScrapperExecution
 from src.scrapper.models.player_transfer_data import PlayerTransferData
 
 
@@ -8,9 +7,7 @@ def save_or_update_player_transfer_data(new_player_transfer_data: PlayerTransfer
     session = Session()
 
     record: PlayerTransferData = session.query(PlayerTransferData) \
-        .join(PlayerTransferData.fifa_scrapper_execution.of_type(FifaScrapperExecution)) \
-        .filter(FifaScrapperExecution.data_from_timestamp
-                == new_player_transfer_data.fifa_scrapper_execution.data_from_timestamp) \
+        .filter(PlayerTransferData.fifa_scrapper_execution_id == new_player_transfer_data.fifa_scrapper_execution_id) \
         .filter(PlayerTransferData.player_id == new_player_transfer_data.player_id) \
         .one_or_none()
 

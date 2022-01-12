@@ -13,7 +13,9 @@ class League(Base):
     full_name = Column(String)
     nation_id = Column(Integer, ForeignKey('nation.nation_id'))
     nation = relationship("Nation", backref="league")
+    competition_type = Column(String)
 
-    def __init__(self, full_name, nation):
+    def __init__(self, full_name, nation, competition_type):
         self.full_name = full_name
         self.nation = nation
+        self.competition_type = competition_type

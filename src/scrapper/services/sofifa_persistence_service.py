@@ -1,5 +1,8 @@
+from src.scrapper.models.appearance import Appearance
 from src.scrapper.models.attribute import Attribute
 from src.scrapper.models.club import Club
+from src.scrapper.models.club_league import ClubLeague
+from src.scrapper.models.league import League
 from src.scrapper.models.nation import Nation
 from src.scrapper.models.player import Player
 from src.scrapper.models.player_attribute import PlayerAttribute
@@ -8,9 +11,13 @@ from src.scrapper.models.player_position import PlayerPosition
 from src.scrapper.models.player_trait import PlayerTrait
 from src.scrapper.models.player_transfer_data import PlayerTransferData
 from src.scrapper.models.position import Position
+from src.scrapper.models.season import Season
 from src.scrapper.models.trait import Trait
+from src.scrapper.repositories.appearance_repository import save_or_update_appearance
 from src.scrapper.repositories.attribute_repository import save_or_update_attribute_by_name
+from src.scrapper.repositories.club_league_repository import save_or_update_club_league
 from src.scrapper.repositories.club_repository import save_or_update_club
+from src.scrapper.repositories.league_repository import save_or_update_league
 from src.scrapper.repositories.nation_repository import save_or_update_nation_by_name
 from src.scrapper.repositories.player_attribute_repository import save_or_update_player_attribute
 from src.scrapper.repositories.player_club_transfer_repository import save_or_update_player_club_transfer
@@ -19,6 +26,7 @@ from src.scrapper.repositories.player_repository import save_or_update_player_by
 from src.scrapper.repositories.player_trait_repository import save_or_update_player_trait
 from src.scrapper.repositories.player_transfer_data_repository import save_or_update_player_transfer_data
 from src.scrapper.repositories.position_repository import save_or_update_position_by_short_name
+from src.scrapper.repositories.season_repository import save_or_update_season
 from src.scrapper.repositories.trait_repository import save_or_update_trait_by_name
 
 
@@ -42,6 +50,49 @@ def save_data(player_data, execution):
     save_traits(player_data, saved_player, execution)
     save_transfer_data(player_data, saved_player, execution)
     save_transfer_history(player_data, saved_player)
+    save_appearance_and_club_league_data(player_data, saved_player)
+
+
+def save_appearance_and_club_league_data(player_data, saved_player):
+    appearances = player_data['appearances']
+
+    for appearance in appearances:
+        if "/" in appearance['season']:
+            season_start_year = appearance['season'].split('/')[0].strip()
+            season_end_year = appearance['season'].split('/')[1].strip()
+        else:
+            season_start_year = appearance['season'].strip()
+            season_end_year = appearance['season'].strip()
+
+        new_season = Season(start_year=season_start_year,
+                            end_year=season_end_year,
+                            designation=appearance['season'])
+        saved_season = save_or_update_season(new_season)
+
+        new_club = Club(full_name=appearance['team'], city='', is_professional_club=None)
+        saved_club = save_or_update_club(new_club)
+
+        new_league = League(full_name=appearance['competition'],
+                            nation=None,
+                            competition_type=appearance['competition_type'])
+        saved_league = save_or_update_league(new_league)
+
+        new_appearance = Appearance(player=saved_player,
+                                    club=saved_club,
+                                    league=saved_league,
+                                    season=saved_season,
+                                    minutes_played=appearance['minutes_played'],
+                                    appearances=appearance['appearances'],
+                                    lineups=appearance['lineups'],
+                                    substitute_in=appearance['substitute_in'],
+                                    substitute_out=appearance['substitute_out'],
+                                    subs_on_bench=appearance['subs_on_bench'])
+        saved_appearance = save_or_update_appearance(new_appearance)
+
+        new_club_league = ClubLeague(club=saved_club,
+                                     league=saved_league,
+                                     season=saved_season)
+        saved_club_league = save_or_update_club_league(new_club_league)
 
 
 def save_transfer_history(player_data, saved_player):
@@ -50,9 +101,9 @@ def save_transfer_history(player_data, saved_player):
     for transfer_entry in transfer_history:
         transfer = transfer_history[transfer_entry]
 
-        new_club_from = Club(full_name=transfer['club_from'], city='')
+        new_club_from = Club(full_name=transfer['club_from'], city='', is_professional_club=True)
         saved_club_from = save_or_update_club(new_club_from)
-        new_club_to = Club(full_name=transfer['club_to'], city='')
+        new_club_to = Club(full_name=transfer['club_to'], city='', is_professional_club=True)
         saved_club_to = save_or_update_club(new_club_to)
 
         new_player_club_transfer = PlayerClubTransfer(from_club=saved_club_from,

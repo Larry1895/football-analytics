@@ -8,6 +8,7 @@ CREATE TABLE nation
 CREATE TABLE season
 (
     season_id  serial PRIMARY KEY,
+    designation VARCHAR(1024),
     start_year INT,
     end_year   INT
 );
@@ -17,6 +18,7 @@ CREATE TABLE league
     league_id serial PRIMARY KEY,
     full_name VARCHAR(255) UNIQUE,
     nation_id INT,
+    competition_type VARCHAR(1024),
     FOREIGN KEY (nation_id)
         REFERENCES nation (nation_id)
 );
@@ -25,7 +27,8 @@ CREATE TABLE club
 (
     club_id   serial PRIMARY KEY,
     full_name VARCHAR(1024) UNIQUE,
-    city      VARCHAR(1024)
+    city      VARCHAR(1024),
+    is_professional_club BOOLEAN
 );
 
 CREATE TABLE club_league
@@ -179,3 +182,26 @@ CREATE TABLE formation_position
     FOREIGN KEY (formation_id)
         REFERENCES formation (formation_id)
 );
+
+CREATE TABLE appearance
+(
+    appearance_id serial PRIMARY KEY,
+    season_id INT,
+    player_id INT,
+    club_id INT,
+    league_id INT,
+    minutes_played INT,
+    appearances INT,
+    lineups INT,
+    substitute_in INT,
+    substitute_out INT,
+    subs_on_bench INT,
+    FOREIGN KEY (season_id)
+        REFERENCES season (season_id),
+    FOREIGN KEY (club_id)
+        REFERENCES club (club_id),
+    FOREIGN KEY (league_id)
+        REFERENCES league (league_id),
+    FOREIGN KEY (player_id)
+        REFERENCES player (player_id)
+)

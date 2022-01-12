@@ -1,8 +1,5 @@
 import re
 
-from numpy.core import long
-from sqlalchemy import null
-
 fifa_stats = ['Crossing', 'Finishing', 'Heading Accuracy',
               'Short Passing', 'Volleys', 'Dribbling', 'Curve',
               'Free Kick Accuracy', 'Long Passing', 'Ball Control',
@@ -12,6 +9,61 @@ fifa_stats = ['Crossing', 'Finishing', 'Heading Accuracy',
               'Vision', 'Penalties', 'Composure', 'Marking', 'Standing Tackle',
               'Sliding Tackle', 'GK Diving', 'GK Handling', 'GK Kicking',
               'GK Positioning', 'GK Reflexes']
+
+
+def extract_appereances_from_table(block, competition_type):
+    appearances = []
+    tbody = block.find('tbody')
+    if tbody:
+        rows = tbody.find_all('tr')
+        for row in rows:
+            colums = row.find_all('td')
+            appearance = {}
+            appearance['season'] = colums[0].text
+            appearance['team'] = colums[1]['title'].strip()
+            appearance['competition'] = colums[2].text
+            appearance['minutes_played'] = colums[3].text.strip().replace('&nbsp;', '')
+            appearance['appearances'] = colums[4].text.strip().replace('&nbsp;', '')
+            appearance['lineups'] = colums[5].text.strip().replace('&nbsp;', '')
+            appearance['substitute_in'] = colums[6].text.strip().replace('&nbsp;', '')
+            appearance['substitute_out'] = colums[7].text.strip().replace('&nbsp;', '')
+            appearance['subs_on_bench'] = colums[8].text.strip().replace('&nbsp;', '')
+            appearance['competition_type'] = competition_type
+
+            appearances.append(appearance)
+    return appearances
+
+
+# Get player appearances
+def find_player_appearances(soup):
+    player_data = {}
+    appearances = []
+
+    domestic_leagues_header = "Domestic Leagues"
+    domestic_cups_header = "Domestic Cups"
+    international_cups_header = "International Cups"
+
+    blocks = soup.find_all('div', {'class': 'card double-spacing'})
+    for block in blocks:
+        header = block.find('h5')
+        if header:
+            if header.text == domestic_leagues_header:
+                cup_appearances = extract_appereances_from_table(block, 'domestic_league')
+                for appearance in cup_appearances:
+                    appearances.append(appearance)
+
+            elif header.text == domestic_cups_header:
+                cup_appearances = extract_appereances_from_table(block, 'domestic_cup')
+                for appearance in cup_appearances:
+                    appearances.append(appearance)
+
+            elif header.text == international_cups_header:
+                cup_appearances = extract_appereances_from_table(block, 'international_cup')
+                for appearance in cup_appearances:
+                    appearances.append(appearance)
+
+    player_data['appearances'] = appearances
+    return player_data
 
 
 # Get club transfers for player
