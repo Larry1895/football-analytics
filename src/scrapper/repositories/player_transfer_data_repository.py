@@ -7,8 +7,8 @@ def save_or_update_player_transfer_data(new_player_transfer_data: PlayerTransfer
     session = Session()
 
     record: PlayerTransferData = session.query(PlayerTransferData) \
-        .filter(PlayerTransferData.fifa_scrapper_execution_id == new_player_transfer_data.fifa_scrapper_execution_id) \
-        .filter(PlayerTransferData.player_id == new_player_transfer_data.player_id) \
+        .filter(PlayerTransferData.fifa_scrapper_execution_id == new_player_transfer_data.fifa_scrapper_execution.fifa_scrapper_execution_id) \
+        .filter(PlayerTransferData.player_id == new_player_transfer_data.player.player_id) \
         .one_or_none()
 
     if record is not None:

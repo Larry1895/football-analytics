@@ -57,6 +57,7 @@ def scrap_data_from_all_player():
     # Iterate over pages till first player is shown again
     while first_player_shortname != first_player_shortname_of_site:
         # scrap data from this site
+        print(offset)
         site_url = 'http://sofifa.com/players?offset=' + str(offset) + '&r=' + fifa_year_url_param + '&set=true'
         soup = soup_maker(site_url)
         scrap_data_from_all_player_of_one_page(soup)

@@ -87,12 +87,12 @@ def save_appearance_and_club_league_data(player_data, saved_player):
                                     substitute_in=appearance['substitute_in'],
                                     substitute_out=appearance['substitute_out'],
                                     subs_on_bench=appearance['subs_on_bench'])
-        saved_appearance = save_or_update_appearance(new_appearance)
+        save_or_update_appearance(new_appearance)
 
         new_club_league = ClubLeague(club=saved_club,
                                      league=saved_league,
                                      season=saved_season)
-        saved_club_league = save_or_update_club_league(new_club_league)
+        save_or_update_club_league(new_club_league)
 
 
 def save_transfer_history(player_data, saved_player):

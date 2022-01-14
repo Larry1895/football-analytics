@@ -22,13 +22,13 @@ def save_or_update_player_club_transfer(new_player_club_transfer: PlayerClubTran
 
     if new_player_club_transfer.changed_at is not None:
         record = session.query(PlayerClubTransfer) \
-            .filter(PlayerClubTransfer.player_id == new_player_club_transfer.player_id) \
+            .filter(PlayerClubTransfer.player_id == new_player_club_transfer.player.player_id) \
             .filter(PlayerClubTransfer.changed_at == new_player_club_transfer.changed_at) \
             .one_or_none()
     else:
         record = session.query(PlayerClubTransfer) \
-            .filter(PlayerClubTransfer.player_id == new_player_club_transfer.player_id) \
-            .filter(PlayerClubTransfer.changed_at is None) \
+            .filter(PlayerClubTransfer.player_id == new_player_club_transfer.player.player_id) \
+            .filter(PlayerClubTransfer.changed_at.is_(None)) \
             .one_or_none()
 
     if record is None:
