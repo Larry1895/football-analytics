@@ -53,7 +53,7 @@ def scrap_data_from_all_player():
 
     first_player_shortname = find_first_player_shortname(soup)
     first_player_shortname_of_site = ""
-    offset = 0
+    offset = 17340
     # Iterate over pages till first player is shown again
     while first_player_shortname != first_player_shortname_of_site:
         # scrap data from this site
@@ -89,7 +89,7 @@ def scrap_data_from_all_player_of_one_page(soup):
         soup_player_transfer = soup_maker(url_player_transfer)
         final_details.update(get_player_transfer_data(soup_player_transfer))
 
-        print(final_details)
+        # print(final_details)
         save_data(final_details, execution)
 
 

@@ -7,7 +7,7 @@ def save_or_update_player_position(new_player_position: PlayerPosition):
     session = Session()
 
     record: PlayerPosition = session.query(PlayerPosition) \
-        .filter(PlayerPosition.position_id == new_player_position.position.position_id) \
+        .filter(PlayerPosition.position_id == new_player_position.position.trait_id) \
         .filter(PlayerPosition.player_id == new_player_position.player.player_id) \
         .one_or_none()
 

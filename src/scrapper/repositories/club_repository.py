@@ -13,6 +13,8 @@ def save_or_update_club(new_club: Club):
 
     if record is not None:
         # Update
+        record.sofifa_id = new_club.sofifa_id or record.sofifa_id
+        record.nationality = new_club.nationality or record.nationality
         record.city = new_club.city or record.city
         record.is_professional_club = new_club.is_professional_club or record.is_professional_club
     else:
