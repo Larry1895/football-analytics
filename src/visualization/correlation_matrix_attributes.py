@@ -1,17 +1,19 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
 from sqlalchemy import text
+
 from src.scrapper.base import Session
 
 session = Session()
 
-sql = text('SELECT player.player_id, player.full_name ' +
+sql = text('SELECT player.player_id, player.full_name, rating ' +
            'from player ' +
-           'left join player_transfer_data ptd on player.player_id = ptd.player_id')
+           'left join player_transfer_data ptd on player.player_id = ptd.player_id ')
 result = session.execute(sql).all()
 
 name = []
+overall = []
 crossing = []
 finishing = []
 heading_accuracy = []
@@ -50,6 +52,7 @@ gk_reflexes = []
 for row in result:
     dict_row = dict(row)
     name.append(dict_row.get('full_name'))
+    overall.append(dict_row.get('rating'))
 
     sql_attributes = text('select a.name, attribute_value from fifa_player_attribute ' +
                           'left join attribute a on a.attribute_id = fifa_player_attribute.attribute_id ' +
@@ -57,8 +60,7 @@ for row in result:
     result_attributes = session.execute(sql_attributes).all()
     dict_result_attributes = dict(result_attributes)
 
-    print(str(dict_row.get('player_id')))
-
+    print('Load data from player: ' + str(dict_row.get('player_id')))
     crossing.append(dict_result_attributes.get('crossing'))
     finishing.append(dict_result_attributes.get('finishing'))
     heading_accuracy.append(dict_result_attributes.get('heading_accuracy'))
@@ -98,6 +100,7 @@ session.close()
 
 employees_df = pd.DataFrame({
     'Name': name,
+    "overall": overall,
     'crossing': crossing,
     'finishing': finishing,
     'heading_accuracy': heading_accuracy,

@@ -115,7 +115,7 @@ session.close()
 employees_df = pd.DataFrame({
     'Name': name,
     'Value': value,
-    'Wage': wage,
+    # 'Wage': wage,
     'Age': age,
     'Weight': weight,
     'Height': height,
@@ -148,11 +148,11 @@ employees_df = pd.DataFrame({
     'defensive_awareness': defensive_awareness,
     'standing_tackle': standing_tackle,
     'sliding_tackle': sliding_tackle,
-    'gk_diving': gk_diving,
-    'gk_handling': gk_handling,
-    'gk_kicking': gk_kicking,
-    'gk_positioning': gk_positioning,
-    'gk_reflexes': gk_reflexes
+    # 'gk_diving': gk_diving,
+    # 'gk_handling': gk_handling,
+    # 'gk_kicking': gk_kicking,
+    # 'gk_positioning': gk_positioning,
+    # 'gk_reflexes': gk_reflexes
 })
 
 corr_df = employees_df.corr(method='pearson')

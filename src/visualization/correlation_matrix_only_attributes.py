@@ -114,11 +114,11 @@ session.close()
 
 employees_df = pd.DataFrame({
     'Name': name,
-    'Value': value,
-    'Wage': wage,
-    'Age': age,
-    'Weight': weight,
-    'Height': height,
+    # 'Value': value,
+    # 'Wage': wage,
+    # 'Age': age,
+    # 'Weight': weight,
+    # 'Height': height,
     'crossing': crossing,
     'finishing': finishing,
     'heading_accuracy': heading_accuracy,
