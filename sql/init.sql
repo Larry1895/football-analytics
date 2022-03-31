@@ -2,7 +2,8 @@ CREATE TABLE nation
 (
     nation_id    serial PRIMARY KEY,
     full_name    VARCHAR(1024) UNIQUE,
-    abbreviation VARCHAR(255)
+    abbreviation VARCHAR(255),
+    abbreviation_2 varchar(255)
 );
 
 CREATE TABLE season
@@ -27,8 +28,12 @@ CREATE TABLE club
 (
     club_id   serial PRIMARY KEY,
     full_name VARCHAR(1024) UNIQUE,
+    sofifa_id VARCHAR(1024) UNIQUE,
+    nationality_id INT,
     city      VARCHAR(1024),
-    is_professional_club BOOLEAN
+    is_professional_club BOOLEAN,
+    FOREIGN KEY (nationality_id)
+        REFERENCES nation (nation_id)
 );
 
 CREATE TABLE club_league
