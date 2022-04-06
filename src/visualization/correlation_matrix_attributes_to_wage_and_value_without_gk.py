@@ -9,7 +9,7 @@ from src.scrapper.base import Session
 session = Session()
 
 sql = text('SELECT player.player_id, player.full_name, value, wage, player.weight, player.height, date_part(\'year\','
-           'age(date_of_birth)) as age ' +
+           'age(date_of_birth)) as age, rating ' +
            'from player ' +
            'left join player_transfer_data ptd on player.player_id = ptd.player_id'
            # + ' Where player.player_id < 100'
@@ -22,6 +22,7 @@ wage = []
 weight = []
 height = []
 age = []
+rating = []
 
 crossing = []
 finishing = []
@@ -66,6 +67,7 @@ for row in result:
     weight.append(dict_row.get('weight'))
     height.append(dict_row.get('height'))
     age.append(dict_row.get('age'))
+    rating.append(dict_row.get('rating'))
 
     sql_attributes = text('select a.name, attribute_value from fifa_player_attribute ' +
                           'left join attribute a on a.attribute_id = fifa_player_attribute.attribute_id ' +
@@ -116,6 +118,7 @@ employees_df = pd.DataFrame({
     'Name': name,
     'Value': value,
     # 'Wage': wage,
+    'rating': rating,
     'Age': age,
     'Weight': weight,
     'Height': height,
@@ -160,12 +163,12 @@ corr_df = employees_df.corr(method='pearson')
 # Getting the Upper Triangle of the co-relation matrix
 matrix = np.triu(corr_df)
 
-plt.figure(figsize=(32, 24))
-res = sns.heatmap(corr_df, annot=True, cmap='RdYlGn_r', mask=matrix, annot_kws={"fontsize":14}, linewidths=1)
+plt.figure(figsize=(32, 32))
+res = sns.heatmap(corr_df, annot=True, fmt='.2f', cmap='RdYlGn_r', mask=matrix, annot_kws={"fontsize":20}, linewidths=1, cbar_kws = dict(use_gridspec=True,location="bottom"))
 
 # X and Y axis
-res.set_xticklabels(res.get_xmajorticklabels(), fontsize=26, rotation=90)
-res.set_yticklabels(res.get_ymajorticklabels(), fontsize=26, rotation=0)
+res.set_xticklabels(res.get_xmajorticklabels(), fontsize=28, rotation=90)
+res.set_yticklabels(res.get_ymajorticklabels(), fontsize=28, rotation=0)
 
 # Colorbar
 cbar = res.collections[0].colorbar

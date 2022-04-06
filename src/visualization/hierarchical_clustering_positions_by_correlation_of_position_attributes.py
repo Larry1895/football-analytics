@@ -311,7 +311,7 @@ plt.axhline(y=0.6, color='r', linestyle='--')
 plt.show()
 
 # K means
-# number_of_cluster = 42
+# number_of_cluster = 6
 # kmeans = KMeans(n_clusters=number_of_cluster)
 # fit = kmeans.fit(correlated_df)
 # clusters = kmeans.predict(correlated_df)

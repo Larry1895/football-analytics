@@ -160,12 +160,12 @@ corr_df = employees_df.corr(method='pearson')
 # Getting the Upper Triangle of the co-relation matrix
 matrix = np.triu(corr_df)
 
-plt.figure(figsize=(32, 24))
-res = sns.heatmap(corr_df, annot=True, cmap='RdYlGn_r', mask=matrix, annot_kws={"fontsize":14}, linewidths=1)
+plt.figure(figsize=(32, 32))
+res = sns.heatmap(corr_df, annot=True, fmt='.2f', cmap='RdYlGn_r', mask=matrix, annot_kws={"fontsize":20}, linewidths=1, cbar_kws = dict(use_gridspec=True,location="bottom"))
 
 # X and Y axis
-res.set_xticklabels(res.get_xmajorticklabels(), fontsize=26, rotation=90)
-res.set_yticklabels(res.get_ymajorticklabels(), fontsize=26, rotation=0)
+res.set_xticklabels(res.get_xmajorticklabels(), fontsize=28, rotation=90)
+res.set_yticklabels(res.get_ymajorticklabels(), fontsize=28, rotation=0)
 
 # Colorbar
 cbar = res.collections[0].colorbar
